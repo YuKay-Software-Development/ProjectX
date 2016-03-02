@@ -51,7 +51,7 @@ namespace ProjectX
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            debugTex = Content.Load<Texture2D>("debug");
+            debugTex = Content.Load<Texture2D>("sword");
 
             // TODO: use this.Content to load your game content here
         }
@@ -122,7 +122,7 @@ namespace ProjectX
             // TODO: Add your drawing code here
 
             spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
-            spriteBatch.Draw(debugTex, testLoc, Color.Blue);
+            spriteBatch.Draw(debugTex, testLoc, Color.White);
             spriteBatch.End();
             
             base.Draw(gameTime);
