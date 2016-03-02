@@ -92,8 +92,8 @@ namespace ProjectX
                 if (gamePadState.Buttons.Back == ButtonState.Pressed) this.Exit();
 
                 //test
-                float leftThumbStickX = gamePadState.ThumbSticks.Left.X;
-                float leftThumbStickY = gamePadState.ThumbSticks.Left.Y;
+                float leftThumbStickX = gamePadState.ThumbSticks.Left.X * 10;
+                float leftThumbStickY = gamePadState.ThumbSticks.Left.Y * 10;
 
                 testLoc = new Vector2(testLoc.X + leftThumbStickX, testLoc.Y - leftThumbStickY);
 
