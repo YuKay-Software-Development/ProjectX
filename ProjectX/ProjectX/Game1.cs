@@ -82,11 +82,29 @@ namespace ProjectX
         /// checking for collisions, gathering input, and playing audio.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        Vector2 testLoc;
         protected override void Update(GameTime gameTime)
         {
-            // Allows the game to exit
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-                this.Exit();
+            GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
+            if (gamePadState.IsConnected)
+            {
+                // Allows the game to exit
+                if (gamePadState.Buttons.Back == ButtonState.Pressed) this.Exit();
+
+                //test
+                float leftThumbStickX = gamePadState.ThumbSticks.Left.X;
+                float leftThumbStickY = gamePadState.ThumbSticks.Left.Y;
+
+                testLoc = new Vector2(testLoc.X + leftThumbStickX, testLoc.Y - leftThumbStickY);
+
+                //loc reset
+                if (gamePadState.Buttons.A == ButtonState.Pressed)
+                {
+                    testLoc = Vector2.Zero;
+                    testLoc = Vector2.Zero;
+                }
+
+            }
 
             // TODO: Add your update logic here
 
@@ -99,12 +117,12 @@ namespace ProjectX
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.SandyBrown);
 
             // TODO: Add your drawing code here
 
             spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
-            spriteBatch.Draw(debugTex, debugPos, Color.White);
+            spriteBatch.Draw(debugTex, testLoc, Color.Blue);
             spriteBatch.End();
             
             base.Draw(gameTime);
