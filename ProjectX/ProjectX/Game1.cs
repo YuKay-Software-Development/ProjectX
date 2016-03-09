@@ -39,6 +39,7 @@ namespace ProjectX
         }
 
         Texture2D debugTex;
+        Texture2D bg;
         Vector2 debugPos = Vector2.Zero;
         Vector2 debugSpd = new Vector2(50.0f, 50.0f);
 
@@ -52,6 +53,7 @@ namespace ProjectX
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             debugTex = Content.Load<Texture2D>("sword");
+            bg = Content.Load<Texture2D>("bg");
 
             // TODO: use this.Content to load your game content here
         }
@@ -62,9 +64,9 @@ namespace ProjectX
             debugPos += debugSpd * (float)gametime.ElapsedGameTime.TotalSeconds;
 
             int Xmax = graphics.GraphicsDevice.Viewport.Width - debugTex.Width;
-            int Xmin = 0;
+            //int Xmin = 0;
             int Ymax = graphics.GraphicsDevice.Viewport.Height - debugTex.Height;
-            int Ymin = 0;
+            //int Ymin = 0;
 
         }
 
@@ -83,24 +85,31 @@ namespace ProjectX
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         Vector2 testLoc;
+        Vector2 mouseLoc;
+        float controllerSensitivity = 10;
+
         protected override void Update(GameTime gameTime)
         {
-            GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
-            if (gamePadState.IsConnected)
+            GamePadState gamePadState1 = GamePad.GetState(PlayerIndex.Two); //PlayerIndex = Controller ID
+            KeyboardState keyboardState = Keyboard.GetState();
+            MouseState mouseState = Mouse.GetState();
+
+            mouseLoc = new Vector2(mouseState.X, mouseState.Y);
+
+            if (gamePadState1.IsConnected)
             {
                 // Allows the game to exit
-                if (gamePadState.Buttons.Back == ButtonState.Pressed) this.Exit();
+                if (gamePadState1.Buttons.Back == ButtonState.Pressed) this.Exit();
 
                 //test
-                float leftThumbStickX = gamePadState.ThumbSticks.Left.X * 10;
-                float leftThumbStickY = gamePadState.ThumbSticks.Left.Y * 10;
+                float leftThumbStickX = gamePadState1.ThumbSticks.Left.X * controllerSensitivity;
+                float leftThumbStickY = gamePadState1.ThumbSticks.Left.Y * controllerSensitivity;
 
                 testLoc = new Vector2(testLoc.X + leftThumbStickX, testLoc.Y - leftThumbStickY);
 
                 //loc reset
-                if (gamePadState.Buttons.A == ButtonState.Pressed)
+                if (gamePadState1.Buttons.A == ButtonState.Pressed)
                 {
-                    testLoc = Vector2.Zero;
                     testLoc = Vector2.Zero;
                 }
 
@@ -121,8 +130,10 @@ namespace ProjectX
 
             // TODO: Add your drawing code here
 
+
             spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
-            spriteBatch.Draw(debugTex, testLoc, Color.White);
+            spriteBatch.Draw(debugTex, mouseLoc, Color.White); //sword
+            spriteBatch.Draw(bg, testLoc, Color.White); //BG
             spriteBatch.End();
             
             base.Draw(gameTime);
