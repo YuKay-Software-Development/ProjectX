@@ -90,7 +90,7 @@ namespace ProjectX
 
         protected override void Update(GameTime gameTime)
         {
-            GamePadState gamePadState1 = GamePad.GetState(PlayerIndex.Two); //PlayerIndex = Controller ID
+            GamePadState gamePadState1 = GamePad.GetState(PlayerIndex.One); //PlayerIndex = Controller ID
             KeyboardState keyboardState = Keyboard.GetState();
             MouseState mouseState = Mouse.GetState();
 
