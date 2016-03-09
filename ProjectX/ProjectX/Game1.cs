@@ -128,9 +128,6 @@ namespace ProjectX
         {
             GraphicsDevice.Clear(Color.SandyBrown);
 
-            // TODO: Add your drawing code here
-
-
             spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
             spriteBatch.Draw(debugTex, mouseLoc, Color.White); //sword
             spriteBatch.Draw(bg, testLoc, Color.White); //BG
