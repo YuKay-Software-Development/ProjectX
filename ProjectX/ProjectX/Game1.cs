@@ -19,6 +19,15 @@ namespace ProjectX
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        enum GameState
+        {
+            MainMenu,
+            SettingsMenu,
+            Game,
+        }
+
+        GameState currentGameState = GameState.MainMenu;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -31,6 +40,7 @@ namespace ProjectX
         /// related content.  Calling base.Initialize will enumerate through any components
         /// and initialize them as well.
         /// </summary>
+
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
@@ -40,8 +50,13 @@ namespace ProjectX
 
         Texture2D debugTex;
         Texture2D bg;
+        Texture2D mario;
         Vector2 debugPos = Vector2.Zero;
         Vector2 debugSpd = new Vector2(50.0f, 50.0f);
+        Vector2 testLoc;
+        Vector2 mouseLoc;
+        Vector2 screenCenter;
+        Vector2 marioLoc = new Vector2(Vector2.Zero.X, 200);
 
         /// <summary>
         /// LoadContent will be called once per game and is the place to load
@@ -54,8 +69,8 @@ namespace ProjectX
 
             debugTex = Content.Load<Texture2D>("sword");
             bg = Content.Load<Texture2D>("bg");
+            mario = Content.Load<Texture2D>("8_Bit_Mario");
 
-            // TODO: use this.Content to load your game content here
         }
 
         protected void UpdateSprite(GameTime gametime)
@@ -67,6 +82,8 @@ namespace ProjectX
             //int Xmin = 0;
             int Ymax = graphics.GraphicsDevice.Viewport.Height - debugTex.Height;
             //int Ymin = 0;
+
+            screenCenter = new Vector2(GraphicsDevice.Viewport.Bounds.Width / 2, GraphicsDevice.Viewport.Bounds.Height / 2);
 
         }
 
@@ -84,9 +101,12 @@ namespace ProjectX
         /// checking for collisions, gathering input, and playing audio.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        Vector2 testLoc;
-        Vector2 mouseLoc;
-        float controllerSensitivity = 10;
+
+        float sensitivity = 5;
+
+        //test
+        Vector2 velocity;
+        readonly Vector2 gravity = new Vector2(0, -9.8f);
 
         protected override void Update(GameTime gameTime)
         {
@@ -102,10 +122,10 @@ namespace ProjectX
                 if (gamePadState1.Buttons.Back == ButtonState.Pressed) this.Exit();
 
                 //test
-                float leftThumbStickX = gamePadState1.ThumbSticks.Left.X * controllerSensitivity;
-                float leftThumbStickY = gamePadState1.ThumbSticks.Left.Y * controllerSensitivity;
+                float leftThumbStickX = gamePadState1.ThumbSticks.Left.X * sensitivity;
+                float leftThumbStickY = gamePadState1.ThumbSticks.Left.Y * sensitivity;
 
-                testLoc = new Vector2(testLoc.X + leftThumbStickX, testLoc.Y - leftThumbStickY);
+                marioLoc = new Vector2(marioLoc.X + leftThumbStickX, marioLoc.Y - leftThumbStickY);
 
                 //loc reset
                 if (gamePadState1.Buttons.A == ButtonState.Pressed)
@@ -115,9 +135,24 @@ namespace ProjectX
 
             }
 
-            // TODO: Add your update logic here
+            //Don't do else if cuz otherwise first one has priority
+            if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D)) { marioLoc.X += sensitivity; }
+            if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A)) { marioLoc.X -= sensitivity; }
+            //if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W)) { testLoc.Y -= sensitivity; }
+            //if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S)) { testLoc.Y += sensitivity; }
+            if (keyboardState.IsKeyDown(Keys.Enter)) { marioLoc = new Vector2(Vector2.Zero.X, 200); }
+            if (keyboardState.IsKeyDown(Keys.Space))
+            {
+                //float time = (float)GameTime.ElapsedGameTime.TotalSeconds;
+                velocity += gravity * 1;
+                marioLoc += velocity * 1;
 
-            base.Update(gameTime);
+                
+            }
+
+                // TODO: Add your update logic here
+
+                base.Update(gameTime);
         }
 
         /// <summary>
@@ -126,11 +161,12 @@ namespace ProjectX
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.SandyBrown);
+            GraphicsDevice.Clear(Color.White);
 
             spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
             spriteBatch.Draw(debugTex, mouseLoc, Color.White); //sword
-            spriteBatch.Draw(bg, testLoc, Color.White); //BG
+            spriteBatch.Draw(mario, marioLoc, Color.White); //mario
+            //spriteBatch.Draw(bg, testLoc, Color.White); //BG
             spriteBatch.End();
             
             base.Draw(gameTime);
