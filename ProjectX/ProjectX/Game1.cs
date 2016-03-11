@@ -11,19 +11,32 @@ using Microsoft.Xna.Framework.Media;
 
 namespace ProjectX
 {
-    /// <summary>
-    /// This is the main type for your game
-    /// </summary>
+
     public class Game1 : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+        SpriteBatch spriteDefault;
+        SpriteBatch spriteMainMenu;
+        SpriteBatch spriteGame;
 
         enum GameState
         {
             MainMenu,
             SettingsMenu,
             Game,
+            PauseMenu,
+        }
+
+        enum GameLevels
+        {
+            level1,
+        }
+
+        enum MenuButtonState
+        {
+            Default,
+            Hover,
+            Pressed,
         }
 
         GameState currentGameState = GameState.MainMenu;
@@ -32,14 +45,9 @@ namespace ProjectX
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            graphics.PreferredBackBufferWidth = 1920;
+            graphics.PreferredBackBufferHeight = 1080;
         }
-
-        /// <summary>
-        /// Allows the game to perform any initialization it needs to before starting to run.
-        /// This is where it can query for any required services and load any non-graphic
-        /// related content.  Calling base.Initialize will enumerate through any components
-        /// and initialize them as well.
-        /// </summary>
 
         protected override void Initialize()
         {
@@ -48,65 +56,52 @@ namespace ProjectX
             base.Initialize();
         }
 
-        Texture2D debugTex;
-        Texture2D bg;
-        Texture2D mario;
-        Vector2 debugPos = Vector2.Zero;
-        Vector2 debugSpd = new Vector2(50.0f, 50.0f);
+        Texture2D cursorTex;
+        Texture2D bgTex;
+        Texture2D marioTex;
+        Texture2D menuPlayTex;
+        Texture2D menuQuitTex;
+        Texture2D menuSettingsTex;
         Vector2 testLoc;
         Vector2 mouseLoc;
         Vector2 screenCenter;
-        Vector2 marioLoc = new Vector2(Vector2.Zero.X, 200);
+        Vector2 marioLoc = new Vector2(Vector2.Zero.X, 540);
 
-        /// <summary>
-        /// LoadContent will be called once per game and is the place to load
-        /// all of your content.
-        /// </summary>
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            spriteDefault = new SpriteBatch(GraphicsDevice);
+            spriteMainMenu = new SpriteBatch(GraphicsDevice);
+            spriteGame = new SpriteBatch(GraphicsDevice);
 
-            debugTex = Content.Load<Texture2D>("sword");
-            bg = Content.Load<Texture2D>("bg");
-            mario = Content.Load<Texture2D>("8_Bit_Mario");
+            cursorTex = Content.Load<Texture2D>("sword");
+            bgTex = Content.Load<Texture2D>("bg");
+            marioTex = Content.Load<Texture2D>("8_Bit_Mario");
+
+            //Menu Items
+            menuPlayTex = Content.Load<Texture2D>("menuPlay");
+            menuQuitTex = Content.Load<Texture2D>("menuQuit");
+            menuSettingsTex = Content.Load<Texture2D>("menuSettings");
 
         }
 
         protected void UpdateSprite(GameTime gametime)
         {
 
-            debugPos += debugSpd * (float)gametime.ElapsedGameTime.TotalSeconds;
-
-            int Xmax = graphics.GraphicsDevice.Viewport.Width - debugTex.Width;
+            int Xmax = graphics.GraphicsDevice.Viewport.Width - cursorTex.Width;
             //int Xmin = 0;
-            int Ymax = graphics.GraphicsDevice.Viewport.Height - debugTex.Height;
+            int Ymax = graphics.GraphicsDevice.Viewport.Height - cursorTex.Height;
             //int Ymin = 0;
 
-            screenCenter = new Vector2(GraphicsDevice.Viewport.Bounds.Width / 2, GraphicsDevice.Viewport.Bounds.Height / 2);
+            screenCenter = new Vector2(Xmax / 2, Ymax / 2);
 
         }
 
-        /// <summary>
-        /// UnloadContent will be called once per game and is the place to unload
-        /// all content.
-        /// </summary>
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
         }
 
-        /// <summary>
-        /// Allows the game to run logic such as updating the world,
-        /// checking for collisions, gathering input, and playing audio.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
-
-        float sensitivity = 5;
-
-        //test
-        Vector2 velocity;
-        readonly Vector2 gravity = new Vector2(0, -9.8f);
+        float sensitivity = 5; //I don't think I will need this
 
         protected override void Update(GameTime gameTime)
         {
@@ -135,40 +130,35 @@ namespace ProjectX
 
             }
 
-            //Don't do else if cuz otherwise first one has priority
-            if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D)) { marioLoc.X += sensitivity; }
-            if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A)) { marioLoc.X -= sensitivity; }
-            //if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W)) { testLoc.Y -= sensitivity; }
-            //if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S)) { testLoc.Y += sensitivity; }
-            if (keyboardState.IsKeyDown(Keys.Enter)) { marioLoc = new Vector2(Vector2.Zero.X, 200); }
-            if (keyboardState.IsKeyDown(Keys.Space))
-            {
-                //float time = (float)GameTime.ElapsedGameTime.TotalSeconds;
-                velocity += gravity * 1;
-                marioLoc += velocity * 1;
+            //Don't do "else if" cuz otherwise first one has priority
+            if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D)) marioLoc.X += sensitivity;
+            if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A)) marioLoc.X -= sensitivity;
+            //if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W)) testLoc.Y -= sensitivity;
+            //if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S)) testLoc.Y += sensitivity;
+            if (keyboardState.IsKeyDown(Keys.Enter)) marioLoc = new Vector2(Vector2.Zero.X, 580);
 
-                
-            }
+            // TODO: Add your update logic here
 
-                // TODO: Add your update logic here
-
-                base.Update(gameTime);
+            base.Update(gameTime);
         }
 
-        /// <summary>
-        /// This is called when the game should draw itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.White);
 
-            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
-            spriteBatch.Draw(debugTex, mouseLoc, Color.White); //sword
-            spriteBatch.Draw(mario, marioLoc, Color.White); //mario
-            //spriteBatch.Draw(bg, testLoc, Color.White); //BG
-            spriteBatch.End();
-            
+            spriteDefault.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend);
+            spriteDefault.Draw(cursorTex, new Vector2(mouseLoc.X - cursorTex.Width / 2, (mouseLoc.Y - cursorTex.Height / 2) + 25), Color.White); //sword
+
+            if (currentGameState == GameState.MainMenu)
+            {
+                spriteMainMenu.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
+                spriteMainMenu.Draw(menuPlayTex, new Vector2((graphics.GraphicsDevice.Viewport.Width - menuPlayTex.Width) / 2, 10), Color.White);
+                //spriteMainMenu.Draw(marioTex, marioLoc, Color.White); //mario
+                //spriteMainMenu.Draw(bg, testLoc, Color.White); //BG
+                spriteMainMenu.End();
+            }
+
+            spriteDefault.End();
             base.Draw(gameTime);
         }
     }
