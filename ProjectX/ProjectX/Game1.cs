@@ -32,13 +32,6 @@ namespace ProjectX
             level1,
         }
 
-        enum MenuButtonState
-        {
-            Default,
-            Hover,
-            Pressed,
-        }
-
         GameState currentGameState = GameState.MainMenu;
 
         public Game1()
@@ -47,7 +40,6 @@ namespace ProjectX
             Content.RootDirectory = "Content";
             graphics.PreferredBackBufferWidth = 1920;
             graphics.PreferredBackBufferHeight = 1080;
-            menuPlayLoc = new Vector2(getScreenCenterX(menuPlayTex), 10); //work here
         }
 
         protected override void Initialize()
@@ -63,6 +55,7 @@ namespace ProjectX
         Texture2D menuPlayTex;
         Texture2D menuQuitTex;
         Texture2D menuSettingsTex;
+        
         Vector2 menuPlayLoc;
         Vector2 mouseLoc;
         Vector2 marioLoc = new Vector2(Vector2.Zero.X, 540);
@@ -74,13 +67,15 @@ namespace ProjectX
             spriteGame = new SpriteBatch(GraphicsDevice);
 
             cursorTex = Content.Load<Texture2D>("sword");
-            bgTex = Content.Load<Texture2D>("bg");
             marioTex = Content.Load<Texture2D>("8_Bit_Mario");
 
             //Menu Items
             menuPlayTex = Content.Load<Texture2D>("menuPlay");
             menuQuitTex = Content.Load<Texture2D>("menuQuit");
             menuSettingsTex = Content.Load<Texture2D>("menuSettings");
+
+            //Location
+            menuPlayLoc = new Vector2(getScreenCenterX(menuPlayTex), 10);
 
         }
 
@@ -129,6 +124,10 @@ namespace ProjectX
 
             //if(.getTexture().getBounds().Contains(mouseLoc))
 
+            if (keyboardState.IsKeyDown(Keys.F1)) currentGameState = GameState.MainMenu;
+            if (keyboardState.IsKeyDown(Keys.F2)) currentGameState = GameState.SettingsMenu;
+            if (keyboardState.IsKeyDown(Keys.F3)) currentGameState = GameState.Game;
+
             // TODO: Add your update logic here
 
             base.Update(gameTime);
@@ -139,7 +138,7 @@ namespace ProjectX
             GraphicsDevice.Clear(Color.White);
 
             spriteDefault.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend);
-            spriteDefault.Draw(cursorTex, new Vector2(mouseLoc.X - cursorTex.Width / 2, (mouseLoc.Y - cursorTex.Height / 2) + 25), Color.White); //sword
+            if (currentGameState != GameState.Game) spriteDefault.Draw(cursorTex, new Vector2(mouseLoc.X - cursorTex.Width / 2, (mouseLoc.Y - cursorTex.Height / 2) + 25), Color.White); //sword
 
             if (currentGameState == GameState.MainMenu)
             {
