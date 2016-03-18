@@ -5,9 +5,14 @@ using System.Text;
 
 namespace ProjectX
 {
-    public class MainMenu : Microsoft.Xna.Framework.GameComponent
+    public class MainMenu
     {
-        enum MenuButtonState
+        public MainMenu()
+        {
+
+        }
+
+        enum ButtonState
         {
             Default,
             Hover,

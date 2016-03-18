@@ -1,17 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
 
 namespace ProjectX
 {
-
     public class Game1 : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
@@ -44,19 +37,18 @@ namespace ProjectX
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
             base.Initialize();
+            menuPlay = new Rectangle(getScreenCenterX(menuPlayTex), 10, menuPlayTex.Width, menuPlayTex.Height);
+            
         }
 
         Texture2D cursorTex;
-        Texture2D bgTex;
         Texture2D marioTex;
         Texture2D menuPlayTex;
         Texture2D menuQuitTex;
         Texture2D menuSettingsTex;
         
-        Vector2 menuPlayLoc;
+        Rectangle menuPlay;
         Vector2 mouseLoc;
         Vector2 marioLoc = new Vector2(Vector2.Zero.X, 540);
 
@@ -73,10 +65,6 @@ namespace ProjectX
             menuPlayTex = Content.Load<Texture2D>("menuPlay");
             menuQuitTex = Content.Load<Texture2D>("menuQuit");
             menuSettingsTex = Content.Load<Texture2D>("menuSettings");
-
-            //Location
-            menuPlayLoc = new Vector2(getScreenCenterX(menuPlayTex), 10);
-
         }
 
         protected void UpdateSprite(GameTime gametime)
@@ -92,7 +80,7 @@ namespace ProjectX
             // TODO: Unload any non ContentManager content here
         }
 
-        float sensitivity = 5; //I don't think I will need this
+        float sensitivity = 10; //I don't think I will need this
 
         protected override void Update(GameTime gameTime)
         {
@@ -104,25 +92,27 @@ namespace ProjectX
 
             if (gamePadState1.IsConnected)
             {
-                // Allows the game to exit
+                //Allows the game to exit
                 if (gamePadState1.Buttons.Back == ButtonState.Pressed) this.Exit();
 
                 //test
                 float leftThumbStickX = gamePadState1.ThumbSticks.Left.X * sensitivity;
                 float leftThumbStickY = gamePadState1.ThumbSticks.Left.Y * sensitivity;
 
-                marioLoc = new Vector2(marioLoc.X + leftThumbStickX, marioLoc.Y - leftThumbStickY);
+                marioLoc = new Vector2(marioLoc.X + leftThumbStickX, marioLoc.Y - leftThumbStickY); 
 
             }
 
             //Don't do "else if" cuz otherwise first one has priority
             if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D)) marioLoc.X += sensitivity;
             if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A)) marioLoc.X -= sensitivity;
-            //if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W)) testLoc.Y -= sensitivity;
-            //if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S)) testLoc.Y += sensitivity;
+            if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W)) marioLoc.Y -= sensitivity;
+            if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S)) marioLoc.Y += sensitivity;
             if (keyboardState.IsKeyDown(Keys.Enter)) marioLoc = new Vector2(Vector2.Zero.X, 580);
 
-            //if(.getTexture().getBounds().Contains(mouseLoc))
+            //menuPlayTex.Bounds.Offset(menuPlayLoc.X);
+
+            if (menuPlay.Contains((int)mouseLoc.X, (int)mouseLoc.Y) && mouseState.LeftButton == ButtonState.Pressed) currentGameState = GameState.Game;
 
             if (keyboardState.IsKeyDown(Keys.F1)) currentGameState = GameState.MainMenu;
             if (keyboardState.IsKeyDown(Keys.F2)) currentGameState = GameState.SettingsMenu;
@@ -143,10 +133,14 @@ namespace ProjectX
             if (currentGameState == GameState.MainMenu)
             {
                 spriteMainMenu.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
-                spriteMainMenu.Draw(menuPlayTex, menuPlayLoc, Color.Black);
-                //spriteMainMenu.Draw(marioTex, marioLoc, Color.White); //mario
-                //spriteMainMenu.Draw(bg, testLoc, Color.White); //BG
+                spriteMainMenu.Draw(menuPlayTex, menuPlay, Color.White);
                 spriteMainMenu.End();
+            }
+            else if (currentGameState == GameState.Game)
+            {
+                spriteGame.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
+                spriteGame.Draw(marioTex, marioLoc, Color.White); //mario
+                spriteGame.End();
             }
 
             spriteDefault.End();
