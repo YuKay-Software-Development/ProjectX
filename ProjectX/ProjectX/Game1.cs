@@ -47,6 +47,7 @@ namespace ProjectX
             Content.RootDirectory = "Content";
             graphics.PreferredBackBufferWidth = 1920;
             graphics.PreferredBackBufferHeight = 1080;
+            menuPlayLoc = new Vector2(getScreenCenterX(menuPlayTex), 10); //work here
         }
 
         protected override void Initialize()
@@ -62,9 +63,8 @@ namespace ProjectX
         Texture2D menuPlayTex;
         Texture2D menuQuitTex;
         Texture2D menuSettingsTex;
-        Vector2 testLoc;
+        Vector2 menuPlayLoc;
         Vector2 mouseLoc;
-        Vector2 screenCenter;
         Vector2 marioLoc = new Vector2(Vector2.Zero.X, 540);
 
         protected override void LoadContent()
@@ -87,14 +87,10 @@ namespace ProjectX
         protected void UpdateSprite(GameTime gametime)
         {
 
-            int Xmax = graphics.GraphicsDevice.Viewport.Width - cursorTex.Width;
-            //int Xmin = 0;
-            int Ymax = graphics.GraphicsDevice.Viewport.Height - cursorTex.Height;
-            //int Ymin = 0;
-
-            screenCenter = new Vector2(Xmax / 2, Ymax / 2);
-
         }
+
+        public int getScreenCenterX(Texture2D texture) { return (graphics.GraphicsDevice.Viewport.Width - texture.Width) / 2; }
+        public int getScreenCenterY(Texture2D texture) { return (graphics.GraphicsDevice.Viewport.Height - texture.Height) / 2; }
 
         protected override void UnloadContent()
         {
@@ -122,12 +118,6 @@ namespace ProjectX
 
                 marioLoc = new Vector2(marioLoc.X + leftThumbStickX, marioLoc.Y - leftThumbStickY);
 
-                //loc reset
-                if (gamePadState1.Buttons.A == ButtonState.Pressed)
-                {
-                    testLoc = Vector2.Zero;
-                }
-
             }
 
             //Don't do "else if" cuz otherwise first one has priority
@@ -136,6 +126,8 @@ namespace ProjectX
             //if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W)) testLoc.Y -= sensitivity;
             //if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S)) testLoc.Y += sensitivity;
             if (keyboardState.IsKeyDown(Keys.Enter)) marioLoc = new Vector2(Vector2.Zero.X, 580);
+
+            //if(.getTexture().getBounds().Contains(mouseLoc))
 
             // TODO: Add your update logic here
 
@@ -152,7 +144,7 @@ namespace ProjectX
             if (currentGameState == GameState.MainMenu)
             {
                 spriteMainMenu.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
-                spriteMainMenu.Draw(menuPlayTex, new Vector2((graphics.GraphicsDevice.Viewport.Width - menuPlayTex.Width) / 2, 10), Color.White);
+                spriteMainMenu.Draw(menuPlayTex, menuPlayLoc, Color.Black);
                 //spriteMainMenu.Draw(marioTex, marioLoc, Color.White); //mario
                 //spriteMainMenu.Draw(bg, testLoc, Color.White); //BG
                 spriteMainMenu.End();
