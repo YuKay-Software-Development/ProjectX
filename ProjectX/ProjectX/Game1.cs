@@ -27,6 +27,13 @@ namespace ProjectX
 
         GameState currentGameState = GameState.MainMenu;
 
+        enum MenuButtonState
+        {
+            Default,
+            Hover,
+            Pressed,
+        }
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -39,7 +46,6 @@ namespace ProjectX
         {
             base.Initialize();
             menuPlay = new Rectangle(getScreenCenterX(menuPlayTex), 10, menuPlayTex.Width, menuPlayTex.Height);
-            
         }
 
         Texture2D cursorTex;
@@ -49,6 +55,9 @@ namespace ProjectX
         Texture2D menuSettingsTex;
         
         Rectangle menuPlay;
+
+        MenuButtonState menuPlayButtonState = MenuButtonState.Default;
+
         Vector2 mouseLoc;
         Vector2 marioLoc = new Vector2(Vector2.Zero.X, 540);
 
@@ -112,7 +121,9 @@ namespace ProjectX
 
             //menuPlayTex.Bounds.Offset(menuPlayLoc.X);
 
-            if (menuPlay.Contains((int)mouseLoc.X, (int)mouseLoc.Y) && mouseState.LeftButton == ButtonState.Pressed) currentGameState = GameState.Game;
+            if (menuPlay.Contains((int)mouseLoc.X, (int)mouseLoc.Y)) menuPlayButtonState = MenuButtonState.Hover;
+            else menuPlayButtonState = MenuButtonState.Default;
+            if (menuPlayButtonState == MenuButtonState.Hover && mouseState.LeftButton == ButtonState.Pressed) currentGameState = GameState.Game;
 
             if (keyboardState.IsKeyDown(Keys.F1)) currentGameState = GameState.MainMenu;
             if (keyboardState.IsKeyDown(Keys.F2)) currentGameState = GameState.SettingsMenu;
@@ -134,6 +145,7 @@ namespace ProjectX
             {
                 spriteMainMenu.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
                 spriteMainMenu.Draw(menuPlayTex, menuPlay, Color.White);
+                if (menuPlayButtonState == MenuButtonState.Hover) spriteMainMenu.Draw(marioTex, new Vector2(getScreenCenterX(marioTex), getScreenCenterY(marioTex)), Color.White);
                 spriteMainMenu.End();
             }
             else if (currentGameState == GameState.Game)
