@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace ProjectX
 {
-    public class Game1 : Microsoft.Xna.Framework.Game
+    public class Game1 : Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteDefault;
@@ -17,29 +17,29 @@ namespace ProjectX
             MainMenu,
             SettingsMenu,
             Game,
-            PauseMenu,
+            PauseMenu
         }
 
-        enum GameLevels
+        enum GameLevels //fezrbthdyfyndubhdjgvfgbgn
         {
-            level1,
+            level1
         }
 
         GameState currentGameState = GameState.MainMenu;
 
-        enum MenuButtonState
+        enum MenuButtonState //dcfevjuiyk
         {
             Default,
             Hover,
-            Pressed,
+            Pressed
         }
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            graphics.PreferredBackBufferWidth = 1920;
-            graphics.PreferredBackBufferHeight = 1080;
+            graphics.PreferredBackBufferWidth = 1080;
+            graphics.PreferredBackBufferHeight = 720;
         }
 
         protected override void Initialize()
@@ -68,7 +68,7 @@ namespace ProjectX
             spriteGame = new SpriteBatch(GraphicsDevice);
 
             cursorTex = Content.Load<Texture2D>("sword");
-            marioTex = Content.Load<Texture2D>("8_Bit_Mario");
+            marioTex = Content.Load<Texture2D>("3310");
 
             //Menu Items
             menuPlayTex = Content.Load<Texture2D>("menuPlay");
@@ -86,7 +86,7 @@ namespace ProjectX
 
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+            //TODO: Unload any non ContentManager content here
         }
 
         float sensitivity = 10; //I don't think I will need this
@@ -129,7 +129,8 @@ namespace ProjectX
             if (keyboardState.IsKeyDown(Keys.F2)) currentGameState = GameState.SettingsMenu;
             if (keyboardState.IsKeyDown(Keys.F3)) currentGameState = GameState.Game;
 
-            // TODO: Add your update logic here
+            //-------------------------------------------------------------------------------------------------------------------------------------------
+
 
             base.Update(gameTime);
         }
@@ -145,7 +146,12 @@ namespace ProjectX
             {
                 spriteMainMenu.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
                 spriteMainMenu.Draw(menuPlayTex, menuPlay, Color.White);
-                if (menuPlayButtonState == MenuButtonState.Hover) spriteMainMenu.Draw(marioTex, new Vector2(getScreenCenterX(marioTex), getScreenCenterY(marioTex)), Color.White);
+                if (menuPlayButtonState == MenuButtonState.Hover)
+                {
+                    menuPlayTex = Content.Load<Texture2D>("menuQuit");
+                    //spriteMainMenu.Draw(marioTex, new Vector2(getScreenCenterX(marioTex), getScreenCenterY(marioTex)), Color.White);
+                }
+                else menuPlayTex = Content.Load<Texture2D>("menuPlay");
                 spriteMainMenu.End();
             }
             else if (currentGameState == GameState.Game)

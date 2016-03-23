@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
 
 namespace ProjectX
 {
@@ -9,14 +10,10 @@ namespace ProjectX
     {
         public MainMenu()
         {
-
-        }
-
-        enum ButtonState
-        {
-            Default,
-            Hover,
-            Pressed,
+            Button btnPlay = new Button("play", new Vector2(0, 0), new Action(()=>
+            {
+                
+            }));
         }
     }
 }
