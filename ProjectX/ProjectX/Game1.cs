@@ -1,5 +1,5 @@
-using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -7,12 +7,12 @@ namespace ProjectX
 {
     public class Game1 : Game
     {
-        GraphicsDeviceManager graphics;
+        public static GraphicsDeviceManager graphics;
         SpriteBatch spriteDefault;
         SpriteBatch spriteMainMenu;
         SpriteBatch spriteGame;
 
-        enum GameState
+        public enum GameState
         {
             MainMenu,
             SettingsMenu,
@@ -25,14 +25,7 @@ namespace ProjectX
             level1
         }
 
-        GameState currentGameState = GameState.MainMenu;
-
-        enum MenuButtonState //dcfevjuiyk
-        {
-            Default,
-            Hover,
-            Pressed
-        }
+        public static GameState currentGameState = GameState.MainMenu;
 
         public Game1()
         {
@@ -45,21 +38,20 @@ namespace ProjectX
         protected override void Initialize()
         {
             base.Initialize();
-            menuPlay = new Rectangle(getScreenCenterX(menuPlayTex), 10, menuPlayTex.Width, menuPlayTex.Height);
         }
 
         Texture2D cursorTex;
         Texture2D marioTex;
-        Texture2D menuPlayTex;
-        Texture2D menuQuitTex;
-        Texture2D menuSettingsTex;
-        
-        Rectangle menuPlay;
+        public static Texture2D menuPlayTex;
+        public static Texture2D menuQuitTex;
+        public static Texture2D menuSettingsTex;
 
-        MenuButtonState menuPlayButtonState = MenuButtonState.Default;
+        public static SoundEffect menuButtonSound;
 
         Vector2 mouseLoc;
         Vector2 marioLoc = new Vector2(Vector2.Zero.X, 540);
+
+        MainMenu mainMenu;
 
         protected override void LoadContent()
         {
@@ -67,13 +59,17 @@ namespace ProjectX
             spriteMainMenu = new SpriteBatch(GraphicsDevice);
             spriteGame = new SpriteBatch(GraphicsDevice);
 
-            cursorTex = Content.Load<Texture2D>("sword");
-            marioTex = Content.Load<Texture2D>("3310");
+            cursorTex = Content.Load<Texture2D>("Textures/sword");
+            marioTex = Content.Load<Texture2D>("Textures/3310");
 
             //Menu Items
-            menuPlayTex = Content.Load<Texture2D>("menuPlay");
-            menuQuitTex = Content.Load<Texture2D>("menuQuit");
-            menuSettingsTex = Content.Load<Texture2D>("menuSettings");
+            menuPlayTex = Content.Load<Texture2D>("Textures/menuPlay");
+            menuQuitTex = Content.Load<Texture2D>("Textures/menuQuit");
+            menuSettingsTex = Content.Load<Texture2D>("Textures/menuSettings");
+
+            menuButtonSound = Content.Load<SoundEffect>("SoundFX/MenuButton");
+
+            mainMenu = new MainMenu();
         }
 
         protected void UpdateSprite(GameTime gametime)
@@ -81,8 +77,8 @@ namespace ProjectX
 
         }
 
-        public int getScreenCenterX(Texture2D texture) { return (graphics.GraphicsDevice.Viewport.Width - texture.Width) / 2; }
-        public int getScreenCenterY(Texture2D texture) { return (graphics.GraphicsDevice.Viewport.Height - texture.Height) / 2; }
+        public static int getScreenCenterX(Texture2D texture) { return (graphics.GraphicsDevice.Viewport.Width - texture.Width) / 2; }
+        public static int getScreenCenterY(Texture2D texture) { return (graphics.GraphicsDevice.Viewport.Height - texture.Height) / 2; }
 
         protected override void UnloadContent()
         {
@@ -101,7 +97,6 @@ namespace ProjectX
 
             if (gamePadState1.IsConnected)
             {
-                //Allows the game to exit
                 if (gamePadState1.Buttons.Back == ButtonState.Pressed) this.Exit();
 
                 //test
@@ -119,18 +114,14 @@ namespace ProjectX
             if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S)) marioLoc.Y += sensitivity;
             if (keyboardState.IsKeyDown(Keys.Enter)) marioLoc = new Vector2(Vector2.Zero.X, 580);
 
-            //menuPlayTex.Bounds.Offset(menuPlayLoc.X);
-
-            if (menuPlay.Contains((int)mouseLoc.X, (int)mouseLoc.Y)) menuPlayButtonState = MenuButtonState.Hover;
-            else menuPlayButtonState = MenuButtonState.Default;
-            if (menuPlayButtonState == MenuButtonState.Hover && mouseState.LeftButton == ButtonState.Pressed) currentGameState = GameState.Game;
-
             if (keyboardState.IsKeyDown(Keys.F1)) currentGameState = GameState.MainMenu;
             if (keyboardState.IsKeyDown(Keys.F2)) currentGameState = GameState.SettingsMenu;
             if (keyboardState.IsKeyDown(Keys.F3)) currentGameState = GameState.Game;
 
             //-------------------------------------------------------------------------------------------------------------------------------------------
 
+            mainMenu.btnPlay.Update(mouseState);
+            mainMenu.btnSettings.Update(mouseState);
 
             base.Update(gameTime);
         }
@@ -145,14 +136,13 @@ namespace ProjectX
             if (currentGameState == GameState.MainMenu)
             {
                 spriteMainMenu.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
-                spriteMainMenu.Draw(menuPlayTex, menuPlay, Color.White);
-                if (menuPlayButtonState == MenuButtonState.Hover)
-                {
-                    menuPlayTex = Content.Load<Texture2D>("menuQuit");
-                    //spriteMainMenu.Draw(marioTex, new Vector2(getScreenCenterX(marioTex), getScreenCenterY(marioTex)), Color.White);
-                }
-                else menuPlayTex = Content.Load<Texture2D>("menuPlay");
+                spriteMainMenu.Draw(mainMenu.btnPlay.Texture, mainMenu.btnPlay.Rectangle, Color.White);
+                spriteMainMenu.Draw(mainMenu.btnSettings.Texture, mainMenu.btnSettings.Rectangle, Color.White);
                 spriteMainMenu.End();
+            }
+            else if (currentGameState == GameState.SettingsMenu)
+            {
+
             }
             else if (currentGameState == GameState.Game)
             {
