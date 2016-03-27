@@ -106,7 +106,7 @@ namespace ProjectX
                 marioLoc = new Vector2(marioLoc.X + leftThumbStickX, marioLoc.Y - leftThumbStickY); 
 
             }
-
+            
             //Don't do "else if" cuz otherwise first one has priority
             if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D)) marioLoc.X += sensitivity;
             if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A)) marioLoc.X -= sensitivity;
@@ -120,8 +120,11 @@ namespace ProjectX
 
             //-------------------------------------------------------------------------------------------------------------------------------------------
 
-            mainMenu.btnPlay.Update(mouseState);
-            mainMenu.btnSettings.Update(mouseState);
+            if (this.IsActive)
+            {
+                mainMenu.btnPlay.Update(mouseState);
+                mainMenu.btnSettings.Update(mouseState);
+            }
 
             base.Update(gameTime);
         }

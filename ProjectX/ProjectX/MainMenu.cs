@@ -7,6 +7,8 @@ namespace ProjectX
     {
         public Button btnPlay;
         public Button btnSettings;
+
+        int currentHoveringButton = 0; //gfrehy
         public MainMenu()
         {
             //Add Textures
