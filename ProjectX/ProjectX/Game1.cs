@@ -119,7 +119,7 @@ namespace ProjectX
             //-------------------------------------------------------------------------------------------------------------------------------------------
 
             if (currentGameState != GameState.Game) mouseLoc = new Vector2(mouseState.X, mouseState.Y);
-            else mouseLoc = new Vector2(graphics.GraphicsDevice.Viewport.Width / 2, graphics.GraphicsDevice.Viewport.Height / 2);
+            else Mouse.SetPosition(graphics.GraphicsDevice.Viewport.Width / 2, graphics.GraphicsDevice.Viewport.Height / 2);
 
             if (IsActive)
             {
