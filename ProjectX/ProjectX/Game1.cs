@@ -93,8 +93,6 @@ namespace ProjectX
             KeyboardState keyboardState = Keyboard.GetState();
             MouseState mouseState = Mouse.GetState();
 
-            mouseLoc = new Vector2(mouseState.X, mouseState.Y);
-
             if (gamePadState1.IsConnected)
             {
                 if (gamePadState1.Buttons.Back == ButtonState.Pressed) this.Exit();
@@ -120,7 +118,10 @@ namespace ProjectX
 
             //-------------------------------------------------------------------------------------------------------------------------------------------
 
-            if (this.IsActive)
+            if (currentGameState != GameState.Game) mouseLoc = new Vector2(mouseState.X, mouseState.Y);
+            else mouseLoc = new Vector2(graphics.GraphicsDevice.Viewport.Width / 2, graphics.GraphicsDevice.Viewport.Height / 2);
+
+            if (IsActive)
             {
                 mainMenu.btnPlay.Update(mouseState);
                 mainMenu.btnSettings.Update(mouseState);
