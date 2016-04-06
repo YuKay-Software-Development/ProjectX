@@ -5,10 +5,12 @@ namespace ProjectX
 {
     public class MainMenu
     {
+        public static int buttons;
+        private int hoveringButton;
+
         public Button btnPlay;
         public Button btnSettings;
 
-        //int currentHoveringButton = 0;
         public MainMenu()
         {
             //Add Textures

@@ -22,6 +22,7 @@ namespace ProjectX
             this.defaultTexture = defaultTexture;
             this.hoverTexture = hoverTexture;
             this.pressedTexture = pressedTexture;
+            if (enabledGameState == Game1.GameState.MainMenu) MainMenu.buttons++;
         }
 
         private Game1.GameState enabledGameState;
